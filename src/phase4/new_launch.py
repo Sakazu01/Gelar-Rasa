@@ -127,14 +127,31 @@ class NewLaunchIdentifier:
             })
         
         performance_df = pd.DataFrame(launch_performance)
-        performance_df = performance_df.sort_values('performance_score', ascending=False)
+        
+        # Handle empty DataFrame
+        if len(performance_df) == 0:
+            # Return empty DataFrame with expected columns
+            return pd.DataFrame(columns=[
+                'product_id', 'product_name', 'brand', 'type', 'launch_date',
+                'total_revenue', 'total_units', 'total_transactions',
+                'growth_rate_pct', 'market_share_pct', 'performance_score'
+            ])
+        
+        # Sort if column exists
+        if 'performance_score' in performance_df.columns:
+            performance_df = performance_df.sort_values('performance_score', ascending=False)
         
         return performance_df
     
     def _select_top_launches(self, top_n: int) -> pd.DataFrame:
         """Select top N launches based on performance"""
         if len(self.results['launch_performance']) == 0:
-            return pd.DataFrame()
+            # Return empty DataFrame with expected columns
+            return pd.DataFrame(columns=[
+                'product_id', 'product_name', 'brand', 'type', 'launch_date',
+                'total_revenue', 'total_units', 'total_transactions',
+                'growth_rate_pct', 'market_share_pct', 'performance_score'
+            ])
         
         top_launches = self.results['launch_performance'].head(top_n)
         return top_launches
@@ -142,6 +159,9 @@ class NewLaunchIdentifier:
     def _identify_cannibalization_targets(self) -> Dict:
         """Identify existing products that might be cannibalized"""
         cannibalization_targets = {}
+        
+        if len(self.results['top_launches']) == 0:
+            return cannibalization_targets
         
         for _, launch in self.results['top_launches'].iterrows():
             new_product_id = launch['product_id']

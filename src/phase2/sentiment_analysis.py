@@ -137,12 +137,26 @@ class SentimentAnalyzer:
     
     def _detect_emerging_keywords(self) -> pd.DataFrame:
         """Detect emerging keywords over time"""
+        if len(self.reviews_df) == 0:
+            return pd.DataFrame(columns=['keyword', 'recent_mentions', 'old_mentions', 'growth_rate_pct'])
+        
         # Group reviews by time period
         self.reviews_df['year_month'] = self.reviews_df['date'].dt.to_period('M')
         
         # Get recent and old periods
-        latest_period = self.reviews_df['year_month'].max()
-        old_period = latest_period - 6  # 6 months ago
+        unique_periods = sorted(self.reviews_df['year_month'].unique())
+        if len(unique_periods) < 2:
+            # Not enough data for comparison
+            return pd.DataFrame(columns=['keyword', 'recent_mentions', 'old_mentions', 'growth_rate_pct'])
+        
+        latest_period = unique_periods[-1]
+        # Use median period as split point, or 6 months back if available
+        if len(unique_periods) > 6:
+            split_idx = len(unique_periods) - 6
+            old_period = unique_periods[split_idx]
+        else:
+            split_idx = len(unique_periods) // 2
+            old_period = unique_periods[split_idx] if split_idx > 0 else unique_periods[0]
         
         recent_reviews = self.reviews_df[self.reviews_df['year_month'] >= old_period]
         old_reviews = self.reviews_df[self.reviews_df['year_month'] < old_period]
@@ -186,27 +200,45 @@ class SentimentAnalyzer:
                 })
         
         emerging_df = pd.DataFrame(emerging_keywords)
-        emerging_df = emerging_df.sort_values('growth_rate_pct', ascending=False)
+        
+        # Handle empty DataFrame
+        if len(emerging_df) == 0:
+            # Return empty DataFrame with expected columns
+            return pd.DataFrame(columns=['keyword', 'recent_mentions', 'old_mentions', 'growth_rate_pct'])
+        
+        # Sort if column exists
+        if 'growth_rate_pct' in emerging_df.columns:
+            emerging_df = emerging_df.sort_values('growth_rate_pct', ascending=False)
         
         return emerging_df
     
     def _correlate_keywords_with_sales(self) -> pd.DataFrame:
         """Correlate keyword mentions with product sales performance"""
+        if self.product_metrics is None or len(self.results['sentiment_by_product']) == 0:
+            return pd.DataFrame(columns=['avg_rating', 'positive_sentiment', 'total_reviews'])
+        
         # Merge sentiment analysis with product metrics
-        sentiment_sales = self.results['sentiment_by_product'].merge(
-            self.product_metrics[['product_id', 'total_revenue', 'revenue_growth_3m_pct', 'market_share_pct']],
-            on='product_id',
-            how='inner'
-        )
-        
-        # Calculate correlations
-        correlations = {
-            'avg_rating': sentiment_sales['avg_rating'].corr(sentiment_sales['total_revenue']),
-            'positive_sentiment': sentiment_sales['positive_pct'].corr(sentiment_sales['total_revenue']),
-            'total_reviews': sentiment_sales['total_reviews'].corr(sentiment_sales['total_revenue'])
-        }
-        
-        return pd.DataFrame([correlations])
+        try:
+            sentiment_sales = self.results['sentiment_by_product'].merge(
+                self.product_metrics[['product_id', 'total_revenue', 'revenue_growth_3m_pct', 'market_share_pct']],
+                on='product_id',
+                how='inner'
+            )
+            
+            if len(sentiment_sales) == 0:
+                return pd.DataFrame(columns=['avg_rating', 'positive_sentiment', 'total_reviews'])
+            
+            # Calculate correlations
+            correlations = {
+                'avg_rating': sentiment_sales['avg_rating'].corr(sentiment_sales['total_revenue']),
+                'positive_sentiment': sentiment_sales['positive_pct'].corr(sentiment_sales['total_revenue']),
+                'total_reviews': sentiment_sales['total_reviews'].corr(sentiment_sales['total_revenue'])
+            }
+            
+            return pd.DataFrame([correlations])
+        except Exception as e:
+            print(f"⚠️ Warning: Could not correlate keywords with sales: {str(e)}")
+            return pd.DataFrame(columns=['avg_rating', 'positive_sentiment', 'total_reviews'])
     
     def _print_summary(self):
         """Print summary of sentiment analysis"""
@@ -224,6 +256,9 @@ class SentimentAnalyzer:
             print("   Top 10 Emerging Keywords:")
             top_keywords = self.results['emerging_keywords'].head(10)
             for _, row in top_keywords.iterrows():
-                print(f"      • {row['keyword']}: {row['recent_mentions']} mentions "
-                      f"({row['growth_rate_pct']:.1f}% growth)")
+                if 'keyword' in row and 'recent_mentions' in row and 'growth_rate_pct' in row:
+                    print(f"      • {row['keyword']}: {row['recent_mentions']} mentions "
+                          f"({row['growth_rate_pct']:.1f}% growth)")
+        else:
+            print("\n   Emerging Keywords: 0 (No emerging keywords found matching criteria)")
 

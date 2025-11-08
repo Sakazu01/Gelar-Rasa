@@ -39,17 +39,31 @@ class SOVAnalyzer:
         print("PHASE 4.2: SOURCE OF VOLUME (SOV) ANALYSIS")
         print("="*80)
         
+        # Check if we have launches to analyze
+        if len(self.new_launches) == 0 or 'product_id' not in self.new_launches.columns:
+            print("⚠️ No new launches available for SOV analysis")
+            return {
+                'sov_by_launch': {},
+                'sov_breakdown': pd.DataFrame(),
+                'significance_tests': {}
+            }
+        
         # Analyze SOV for each new launch
         self.results['sov_by_launch'] = self._analyze_sov_by_launch(window_months)
         
         # Calculate SOV breakdown
-        self.results['sov_breakdown'] = self._calculate_sov_breakdown()
-        
-        # Statistical significance testing
-        self.results['significance_tests'] = self._perform_significance_tests()
-        
-        # Print summary
-        self._print_summary()
+        if len(self.results['sov_by_launch']) > 0:
+            self.results['sov_breakdown'] = self._calculate_sov_breakdown()
+            
+            # Statistical significance testing
+            self.results['significance_tests'] = self._perform_significance_tests()
+            
+            # Print summary
+            self._print_summary()
+        else:
+            print("⚠️ No SOV data calculated (no valid launches found)")
+            self.results['sov_breakdown'] = pd.DataFrame()
+            self.results['significance_tests'] = {}
         
         print("\n✅ SOV Analysis Completed!")
         

@@ -3,6 +3,10 @@
 
 ## 🚀 Quick Setup
 
+```bash
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
 ### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
@@ -25,12 +29,13 @@ python main.py
 
 ## 📊 What to Expect
 
-The analysis will execute 4 phases:
+The analysis will execute 5 phases:
 
 1. **Phase 1**: Foundational Analysis (Data Integration, Market Snapshot, Product Portfolio)
 2. **Phase 2**: Innovation Radar (Growth Outliers, Sentiment Analysis, White Space)
-3. **Phase 3**: Trend Forecasting (Time Series, Preference Shifts)
-4. **Phase 4**: Cannibalization Analysis (SOV, Portfolio Impact)
+3. **Phase 3**: Trend Analysis (Category, Brand, Channel, Price, Seasonal Trends) - NEW
+4. **Phase 4**: Trend Forecasting (Time Series, Preference Shifts)
+5. **Phase 5**: Cannibalization Analysis (SOV, Portfolio Impact)
 
 ## 📁 Output Structure
 
@@ -53,11 +58,17 @@ After running, you'll find:
 - White space opportunities
 
 ### Phase 3 Results
+- Sales trends by category, brand, and channel
+- Price and discount trends
+- Seasonal patterns analysis
+- Market share evolution
+
+### Phase 4 Results
 - Sales forecasts (6-12 months)
 - Preference shift predictions
 - Model performance metrics
 
-### Phase 4 Results
+### Phase 5 Results
 - Source of Volume (SOV) breakdown
 - Net portfolio impact
 - Launch classification (Additive/Substitutive)

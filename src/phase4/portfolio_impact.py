@@ -41,6 +41,25 @@ class PortfolioImpactAnalyzer:
         print("PHASE 4.3: NET PORTFOLIO IMPACT")
         print("="*80)
         
+        # Check if we have launches and SOV data
+        if len(self.new_launches) == 0 or 'product_id' not in self.new_launches.columns:
+            print("⚠️ No new launches available for portfolio impact analysis")
+            return {
+                'portfolio_impact': pd.DataFrame(),
+                'category_impact': pd.DataFrame(),
+                'brand_impact': pd.DataFrame(),
+                'launch_classification': pd.DataFrame()
+            }
+        
+        if not self.sov_results or 'sov_by_launch' not in self.sov_results or len(self.sov_results['sov_by_launch']) == 0:
+            print("⚠️ No SOV data available for portfolio impact analysis")
+            return {
+                'portfolio_impact': pd.DataFrame(),
+                'category_impact': pd.DataFrame(),
+                'brand_impact': pd.DataFrame(),
+                'launch_classification': pd.DataFrame()
+            }
+        
         # Calculate net portfolio impact for each launch
         self.results['portfolio_impact'] = self._calculate_portfolio_impact(window_months)
         
@@ -131,13 +150,42 @@ class PortfolioImpactAnalyzer:
             })
         
         impact_df = pd.DataFrame(impact_results)
-        impact_df = impact_df.sort_values('net_impact', ascending=False)
+        
+        # Handle empty DataFrame
+        if len(impact_df) == 0:
+            return pd.DataFrame(columns=[
+                'product_id', 'product_name', 'launch_date', 'new_product_revenue',
+                'lost_revenue', 'net_impact', 'net_impact_pct', 'portfolio_growth_pct',
+                'launch_type', 'roi'
+            ])
+        
+        # Sort if column exists
+        if 'net_impact' in impact_df.columns:
+            impact_df = impact_df.sort_values('net_impact', ascending=False)
         
         return impact_df
     
     def _calculate_category_impact(self) -> pd.DataFrame:
         """Calculate impact at category level"""
         category_impacts = []
+        
+        if len(self.results['portfolio_impact']) == 0:
+            return pd.DataFrame(columns=[
+                'category', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
+        
+        if len(self.new_launches) == 0:
+            return pd.DataFrame(columns=[
+                'category', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
+        
+        if not self.sov_results or 'sov_by_launch' not in self.sov_results:
+            return pd.DataFrame(columns=[
+                'category', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
         
         for category in self.new_launches['type'].unique():
             category_launches = self.new_launches[self.new_launches['type'] == category]
@@ -147,10 +195,10 @@ class PortfolioImpactAnalyzer:
             
             for _, launch in category_launches.iterrows():
                 product_id = launch['product_id']
-                if product_id in self.sov_results['sov_by_launch']:
+                if product_id in self.sov_results.get('sov_by_launch', {}):
                     sov_data = self.sov_results['sov_by_launch'][product_id]
-                    total_new_revenue += sov_data['new_product_revenue']
-                    total_lost_revenue += sov_data['cannibalized_revenue']
+                    total_new_revenue += sov_data.get('new_product_revenue', 0)
+                    total_lost_revenue += sov_data.get('cannibalized_revenue', 0)
             
             net_impact = total_new_revenue - total_lost_revenue
             net_impact_pct = (net_impact / total_new_revenue * 100) if total_new_revenue > 0 else 0
@@ -165,13 +213,27 @@ class PortfolioImpactAnalyzer:
             })
         
         category_df = pd.DataFrame(category_impacts)
-        category_df = category_df.sort_values('net_impact', ascending=False)
+        
+        if len(category_df) == 0:
+            return pd.DataFrame(columns=[
+                'category', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
+        
+        if 'net_impact' in category_df.columns:
+            category_df = category_df.sort_values('net_impact', ascending=False)
         
         return category_df
     
     def _calculate_brand_impact(self) -> pd.DataFrame:
         """Calculate impact at brand level"""
         brand_impacts = []
+        
+        if not self.sov_results or 'sov_by_launch' not in self.sov_results:
+            return pd.DataFrame(columns=[
+                'brand', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
         
         for brand in self.new_launches['brand'].unique():
             brand_launches = self.new_launches[self.new_launches['brand'] == brand]
@@ -181,10 +243,10 @@ class PortfolioImpactAnalyzer:
             
             for _, launch in brand_launches.iterrows():
                 product_id = launch['product_id']
-                if product_id in self.sov_results['sov_by_launch']:
+                if product_id in self.sov_results.get('sov_by_launch', {}):
                     sov_data = self.sov_results['sov_by_launch'][product_id]
-                    total_new_revenue += sov_data['new_product_revenue']
-                    total_lost_revenue += sov_data['cannibalized_revenue']
+                    total_new_revenue += sov_data.get('new_product_revenue', 0)
+                    total_lost_revenue += sov_data.get('cannibalized_revenue', 0)
             
             net_impact = total_new_revenue - total_lost_revenue
             net_impact_pct = (net_impact / total_new_revenue * 100) if total_new_revenue > 0 else 0
@@ -199,22 +261,48 @@ class PortfolioImpactAnalyzer:
             })
         
         brand_df = pd.DataFrame(brand_impacts)
-        brand_df = brand_df.sort_values('net_impact', ascending=False)
+        
+        if len(brand_df) == 0:
+            return pd.DataFrame(columns=[
+                'brand', 'num_launches', 'total_new_revenue', 'total_lost_revenue',
+                'net_impact', 'net_impact_pct'
+            ])
+        
+        if 'net_impact' in brand_df.columns:
+            brand_df = brand_df.sort_values('net_impact', ascending=False)
         
         return brand_df
     
     def _classify_launches(self) -> pd.DataFrame:
         """Classify launches as additive, substitutive, or neutral"""
-        classification = self.results['portfolio_impact'][[
+        if len(self.results['portfolio_impact']) == 0:
+            return pd.DataFrame(columns=[
+                'product_id', 'product_name', 'launch_date',
+                'new_product_revenue', 'lost_revenue', 'net_impact',
+                'launch_type', 'roi', 'performance_rating'
+            ])
+        
+        required_columns = [
             'product_id', 'product_name', 'launch_date',
             'new_product_revenue', 'lost_revenue', 'net_impact',
             'launch_type', 'roi'
-        ]].copy()
+        ]
         
-        # Add performance rating
-        classification['performance_rating'] = classification['net_impact'].apply(
-            lambda x: 'Excellent' if x > 0 else ('Poor' if x < -1000000 else 'Moderate')
-        )
+        # Check which columns exist
+        available_columns = [col for col in required_columns if col in self.results['portfolio_impact'].columns]
+        
+        if len(available_columns) == 0:
+            return pd.DataFrame(columns=required_columns + ['performance_rating'])
+        
+        classification = self.results['portfolio_impact'][available_columns].copy()
+        
+        # Add performance rating if net_impact column exists
+        if 'net_impact' in classification.columns:
+            classification['performance_rating'] = classification['net_impact'].apply(
+                lambda x: 'Excellent' if x > 0 else ('Poor' if x < -1000000 else 'Moderate')
+            )
+        else:
+            classification['performance_rating'] = 'Unknown'
         
         return classification
     

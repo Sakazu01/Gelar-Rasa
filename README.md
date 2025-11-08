@@ -15,12 +15,18 @@ Proyek analisis data strategis untuk kategori FMCG Personal Care dengan fokus pa
 - Analisis sentimen konsumen dan emerging keywords
 - Identifikasi white space opportunities
 
-### 2. Trend Forecasting
+### 2. Trend Analysis
+- Analisis tren penjualan per kategori, brand, dan channel
+- Analisis tren harga dan diskon
+- Identifikasi pola musiman (seasonal patterns)
+- Visualisasi tren dengan interactive charts
+
+### 3. Trend Forecasting
 - Memprediksi tren penjualan 6-12 bulan ke depan
 - Modeling pergeseran preferensi konsumen
 - Analisis time series dengan SARIMA, Prophet, dan Ensemble methods
 
-### 3. Product Cannibalization Analysis
+### 4. Product Cannibalization Analysis
 - Evaluasi apakah peluncuran produk baru mengurangi penjualan produk lain
 - Source of Volume (SOV) analysis
 - Net portfolio impact calculation

@@ -25,7 +25,8 @@ wheels/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
+*.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # IDE
 .vscode/
@@ -33,6 +34,7 @@ wheels/
 *.swp
 *.swo
 *~
+.DS_Store
 
 # Data
 data/raw/*
@@ -41,14 +43,11 @@ data/processed/*
 !data/processed/.gitkeep
 
 # Outputs
-outputs/*
+outputs/dashboards/*
+outputs/reports/*
 !outputs/.gitkeep
 !outputs/dashboards/.gitkeep
 !outputs/reports/.gitkeep
-
-# OS
-.DS_Store
-Thumbs.db
 
 # Logs
 *.log
@@ -56,3 +55,18 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Old notebooks (keep only the complete one)
+DSC2025_Analysis_FMCG_PersonalCare.ipynb
+
+# PDF files (booklet)
+*.pdf

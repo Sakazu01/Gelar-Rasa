@@ -103,17 +103,21 @@ def main():
     top_launches = new_launch_results['top_launches']
     
     # Step 4.2: Source of Volume (SOV) Analysis
-    if len(top_launches) > 0:
+    if len(top_launches) > 0 and 'product_id' in top_launches.columns:
         sov_analyzer = SOVAnalyzer(integrated_df, top_launches)
         sov_results = sov_analyzer.execute()
         
         # Step 4.3: Net Portfolio Impact
-        portfolio_impact = PortfolioImpactAnalyzer(
-            integrated_df, 
-            top_launches, 
-            sov_results
-        )
-        impact_results = portfolio_impact.execute()
+        if sov_results and 'sov_by_launch' in sov_results:
+            portfolio_impact = PortfolioImpactAnalyzer(
+                integrated_df, 
+                top_launches, 
+                sov_results
+            )
+            impact_results = portfolio_impact.execute()
+        else:
+            print("⚠️ No SOV data available for portfolio impact analysis")
+            impact_results = {}
     else:
         print("⚠️ No new launches found for cannibalization analysis")
         sov_results = {}
