@@ -1,0 +1,8 @@
+column,type,missing,missing_pct,unique,unique_pct
+product_id,object,0,0.0,15,100.0
+product_name,object,0,0.0,15,100.0
+brand,object,0,0.0,8,53.333333333333336
+type,object,0,0.0,8,53.333333333333336
+size_ml,int64,0,0.0,6,40.0
+base_price,int64,0,0.0,12,80.0
+launch_date,object,0,0.0,15,100.0

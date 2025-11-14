@@ -65,8 +65,6 @@ outputs/reports/*
 Thumbs.db
 desktop.ini
 
-# Old notebooks (keep only the complete one)
-DSC2025_Analysis_FMCG_PersonalCare.ipynb
 
 # PDF files (booklet)
 *.pdf
