@@ -1,9 +1,0 @@
-column,type,missing,missing_pct,unique,unique_pct
-campaign_id,object,0,0.0,20,100.0
-product_id,object,0,0.0,12,60.0
-campaign_name,object,0,0.0,20,100.0
-start_date,object,0,0.0,20,100.0
-end_date,object,0,0.0,20,100.0
-spend_idr,int64,0,0.0,20,100.0
-channel,object,0,0.0,6,30.0
-engagement_rate,float64,0,0.0,20,100.0
