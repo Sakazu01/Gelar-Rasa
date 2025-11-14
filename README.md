@@ -1,11 +1,15 @@
-# Strategi Analisis Data FMCG Personal Care
+# 📊 Analisis Data FMCG Personal Care - End-to-End Analysis
 
 ## 📋 Project Overview
 
-Proyek analisis data strategis untuk kategori FMCG Personal Care dengan fokus pada tiga tujuan utama:
-1. **Innovation Radar** - Identifikasi produk dengan potensi pertumbuhan tinggi
-2. **Trend Forecasting** - Prediksi tren penjualan dan preferensi konsumen
-3. **Product Cannibalization Analysis** - Evaluasi dampak produk baru terhadap produk existing
+Proyek analisis data komprehensif untuk kategori FMCG Personal Care dengan pendekatan end-to-end dari data profiling hingga modeling dan evaluasi. Analisis ini mencakup:
+
+1. **Data Profiling & Cleaning** - Analisis kualitas data dan pembersihan menyeluruh
+2. **Feature Engineering** - Pembuatan fitur bisnis FMCG-specific yang relevan
+3. **Exploratory Data Analysis** - Eksplorasi data dengan visualisasi komprehensif
+4. **Modeling & Evaluation** - Pembangunan model prediksi dengan uji asumsi statistik
+5. **Bias & Validity Analysis** - Identifikasi bias dan validitas data
+6. **Business Insights** - Insight bisnis yang actionable
 
 ## 🎯 Project Goals
 
@@ -35,35 +39,29 @@ Proyek analisis data strategis untuk kategori FMCG Personal Care dengan fokus pa
 
 ```
 Gelar-Rasa/
-├── src/
-│   ├── phase1/              # Foundational Analysis
-│   │   ├── data_integration.py
-│   │   ├── market_snapshot.py
-│   │   └── product_portfolio.py
-│   ├── phase2/              # Innovation Radar
-│   │   ├── growth_outlier.py
-│   │   ├── sentiment_analysis.py
-│   │   └── white_space.py
-│   ├── phase3/              # Trend Forecasting
-│   │   ├── time_series_forecast.py
-│   │   └── preference_shift.py
-│   ├── phase4/              # Product Cannibalization
-│   │   ├── new_launch.py
-│   │   ├── sov_analysis.py
-│   │   └── portfolio_impact.py
-│   └── utils/               # Utility functions
-│       ├── data_loader.py
-│       ├── data_cleaner.py
-│       └── visualizer.py
-├── outputs/
-│   ├── dashboards/          # Visualization outputs
-│   └── reports/             # Analysis reports
+├── DSC2025_Analysis_FMCG_PersonalCare.ipynb  # Main analysis notebook
+├── Gelar_Rasa/
+│   └── data/
+│       └── fmcg_personalcare/
+│           └── fmcg_personalcare/
+│               ├── sales.csv
+│               ├── products.csv
+│               ├── marketing.csv
+│               ├── reviews.csv
+│               └── README_FMCG_Personal_Care.txt
 ├── data/
-│   ├── raw/                 # Raw data files
-│   └── processed/           # Processed data files
-├── main.py                  # Main execution script
-├── requirements.txt         # Python dependencies
-└── README.md               # This file
+│   └── clean/              # Cleaned & engineered datasets
+├── reports/
+│   ├── profiling/          # Data profiling reports
+│   ├── eda/                # EDA visualizations
+│   ├── insights.md         # Business insights
+│   ├── bias_analysis.csv   # Bias analysis results
+│   └── cleaning_log.csv    # Data cleaning log
+├── archive/
+│   └── unneeded/           # Archived files
+├── src/                    # Source code modules (optional)
+├── requirements.txt        # Python dependencies
+└── README.md              # This file
 ```
 
 ## 🚀 Getting Started
@@ -102,116 +100,130 @@ Gelar_Rasa/data/fmcg_personalcare/fmcg_personalcare/
 └── reviews.csv
 ```
 
-## 📊 Execution Plan
+### Menjalankan Analisis
 
-### Phase 1: Foundational Analysis
+1. Buka notebook `DSC2025_Analysis_FMCG_PersonalCare.ipynb`
+2. Jalankan semua cells secara berurutan
+3. Hasil analisis akan tersimpan di:
+   - `reports/profiling/` - Data profiling reports
+   - `reports/eda/` - Visualisasi EDA
+   - `reports/insights.md` - Insight bisnis
+   - `data/clean/` - Dataset yang sudah dibersihkan
 
-#### Step 1.1: Data Integration & Preprocessing
-- Menggabungkan, membersihkan, dan memvalidasi semua sumber data
-- Missing value analysis
-- Outlier detection
-- Feature engineering
+## 📊 Analisis yang Dilakukan
 
-#### Step 1.2: Overall Market Snapshot
-- Total Market Size
-- Company Market Share
-- Category Growth YoY
+### 1. Data Profiling & Ingestion
+- ✅ Load dan analisis semua dataset (sales, products, marketing, reviews)
+- ✅ Profiling komprehensif: missing values, distribusi, tipe data
+- ✅ Simpan hasil profiling ke CSV
 
-#### Step 1.3: Detailed Product Portfolio Analysis
-- Sales Performance (volume, value, growth, seasonality)
-- Distribution Analysis (by channel)
-- Pricing & Promotion (price elasticity)
-- Consumer Profile (demographics, psychographics)
+### 2. Data Cleaning
+- ✅ Normalisasi nama kolom (snake_case)
+- ✅ Konversi kolom waktu ke datetime
+- ✅ Handling missing values (impute dengan median/mode/default)
+- ✅ Hapus duplikat
+- ✅ Deteksi outlier (IQR method)
+- ✅ Validasi data numerik (harga, quantity tidak negatif)
 
-### Phase 2: Innovation Radar
+### 3. Feature Engineering (FMCG-Specific)
+- ✅ Fitur waktu: day_of_week, month, year, is_weekend, is_holiday
+- ✅ Fitur promosi: promo_flag, promo_depth, promo_intensity
+- ✅ Fitur harga: price_ratio_to_base, relative_price_to_avg, price_tier
+- ✅ Fitur historis: lag_qty (1, 7, 30 hari), rolling_mean (7, 30 hari)
+- ✅ Fitur kategori: sku_category, store_type, pack_size
+- ✅ Elastisitas harga: correlation log(qty) vs log(price)
 
-#### Step 2.1: Growth Outlier Detection
-- Identifikasi SKU dengan pertumbuhan di atas rata-rata kategori
-- Rising stars detection (low base, high growth)
+### 4. Exploratory Data Analysis (EDA)
+- ✅ Visualisasi tren penjualan (total & per kategori)
+- ✅ Distribusi harga, quantity, dan promo lift
+- ✅ Korelasi antar fitur (heatmap)
+- ✅ Analisis musiman
+- ✅ Top performer: toko & SKU
+- ✅ SKU dengan promo paling efektif
 
-#### Step 2.2: Consumer Sentiment & Keyword Analysis
-- Analisis data ulasan dan media sosial
-- Emerging keywords identification
-- Keyword-sales correlation
+### 5. Modeling & Evaluation
+- ✅ Baseline models: Linear Regression, Ridge, Lasso, Random Forest, Gradient Boosting
+- ✅ Metrik evaluasi: MAE, RMSE, MAPE, R²
+- ✅ Uji asumsi model:
+  - Normalitas residual (Shapiro-Wilk / Jarque-Bera)
+  - Homoskedastisitas (Breusch-Pagan)
+  - Autokorelasi (Durbin-Watson, Ljung-Box)
+  - Multikolinearitas (VIF)
+- ✅ Interpretasi feature importance
+- ✅ Evaluasi komprehensif dengan rekomendasi perbaikan
 
-#### Step 2.3: White Space & Competitor Innovation Analysis
-- Pemetaan atribut produk vs kebutuhan konsumen
-- White space identification
-- Competitor positioning analysis
+### 6. Bias & Validity Analysis
+- ✅ Deteksi bias waktu (distribusi per tahun/bulan)
+- ✅ Deteksi bias lokasi (distribusi per region)
+- ✅ Deteksi bias promo (distribusi dengan/tanpa promo)
+- ✅ Analisis confounding (promo vs musim)
+- ✅ Kuantifikasi tingkat bias
 
-### Phase 3: Trend Forecasting
+### 7. Documentation
+- ✅ README dengan penjelasan proyek
+- ✅ Laporan insights bisnis (insights.md)
+- ✅ Struktur repository yang rapi
 
-#### Step 3.1: Sales Time-Series Forecasting
-- SARIMA model
-- Prophet model
-- Ensemble forecasting
-- Forecast horizon: 6-12 months
+## 📈 Output Files
 
-#### Step 3.2: Consumer Preference Shift Modeling
-- Analisis pergeseran sentimen
-- Prediksi atribut pendorong utama di masa depan
-- Preference trend projection
+### Reports
+- `reports/profiling/profiling_*.csv` - Data profiling untuk setiap dataset
+- `reports/eda/*.png` - Visualisasi EDA (12+ grafik)
+- `reports/insights.md` - Insight bisnis komprehensif
+- `reports/bias_analysis.csv` - Hasil analisis bias
+- `reports/cleaning_log.csv` - Log proses data cleaning
 
-### Phase 4: Product Cannibalization Analysis
+### Clean Data
+- `data/clean/sales_with_features.csv` - Dataset yang sudah dibersihkan dan di-feature engineering
 
-#### Step 4.1: New Launch Identification
-- Identifikasi 3-5 peluncuran produk baru terbesar (12 bulan terakhir)
-- Launch performance calculation
-
-#### Step 4.2: Source of Volume (SOV) Analysis
-- Analisis sumber penjualan produk baru:
-  - Kompetitor
-  - Ekspansi pasar
-  - Produk internal lain (kanibalisasi)
-
-#### Step 4.3: Net Portfolio Impact
-- Dampak bersih pada total penjualan portofolio
-- Klasifikasi: Additive vs Substitutive
-- ROI calculation
-
-## 🎨 Visualization Outputs
-
-### Phase 1
-- Master Product Dashboard (interaktif)
-- Grafik tren penjualan historis (Pareto - top 20%)
-
-### Phase 2
-- Growth Opportunity Matrix (Bubble chart)
-- Word cloud / Emerging Keyword Trendline
-
-### Phase 3
-- Sales Forecast vs. Actual (dengan confidence interval)
-- Consumer Preference Map (pergeseran kepentingan atribut)
-
-### Phase 4
-- Stacked Area Chart (Source of Volume)
-- Pre-Post Launch Trend Comparison
+### Visualizations (EDA)
+1. Tren penjualan total
+2. Tren penjualan per kategori
+3. Distribusi harga, quantity, discount, promo lift
+4. Korelasi heatmap
+5. Analisis musiman
+6. Top performer (toko & SKU)
+7. Promo effectiveness
+8. Residual normality
+9. Residual homoskedasticity
+10. Feature importance (Linear Regression)
+11. Feature importance (Random Forest)
+12. Predicted vs Actual
 
 ## 🔧 Usage
 
-### Run Complete Analysis
+### Menjalankan Analisis Lengkap
 
-Execute the main script to run all phases:
+1. Buka Jupyter Notebook:
 ```bash
-python main.py
+jupyter notebook DSC2025_Analysis_FMCG_PersonalCare.ipynb
 ```
 
-### Run Individual Phases
-
-You can also import and run individual phases:
-
-```python
-from src.phase1.data_integration import DataIntegration
-from src.phase1.market_snapshot import MarketSnapshot
-
-# Phase 1.1: Data Integration
-data_integration = DataIntegration()
-results = data_integration.execute()
-
-# Phase 1.2: Market Snapshot
-market_snapshot = MarketSnapshot(results['integrated_df'])
-market_results = market_snapshot.execute()
+2. Atau menggunakan JupyterLab:
+```bash
+jupyter lab DSC2025_Analysis_FMCG_PersonalCare.ipynb
 ```
+
+3. Jalankan semua cells secara berurutan (Cell → Run All)
+
+### Reproducibility
+
+- **Random Seed**: 42 (untuk reproducibility)
+- **Package Versions**: Dicatat di awal notebook
+- Semua output disimpan dengan timestamp untuk tracking
+
+### Struktur Notebook
+
+Notebook dibagi menjadi 9 bagian utama:
+1. Setup Environment & Reproducibility
+2. Analisis Struktur Repository
+3. Data Ingestion & Profiling
+4. Data Cleaning
+5. Feature Engineering
+6. Exploratory Data Analysis
+7. Modeling & Evaluasi
+8. Analisis Bias & Validitas Data
+9. Ringkasan & Insight Bisnis
 
 ## 📈 Key Features
 
@@ -224,28 +236,35 @@ market_results = market_snapshot.execute()
 ## 📝 Methodology
 
 ### Data Preprocessing
-- Missing value analysis and imputation
-- Outlier detection (IQR method)
-- Feature engineering (30+ features)
-- Temporal features (seasonality, trends)
+- Missing value analysis dan imputation (median/mode/default)
+- Outlier detection menggunakan IQR method (1.5 × IQR)
+- Normalisasi nama kolom ke snake_case
+- Validasi data numerik (harga, quantity tidak negatif)
 
-### Innovation Radar
-- BCG Matrix analysis
-- K-Means clustering for innovation scoring
-- Sentiment analysis and keyword extraction
-- White space identification
+### Feature Engineering
+- **30+ fitur** yang dibuat mencakup:
+  - Fitur waktu (8 fitur)
+  - Fitur promosi (5 fitur)
+  - Fitur harga (4 fitur)
+  - Fitur historis (8 fitur)
+  - Fitur kategori (5 fitur)
+  - Elastisitas harga (1 fitur)
 
-### Trend Forecasting
-- Time series decomposition (trend, seasonal, residual)
-- SARIMA model with seasonal components
-- Facebook Prophet for automatic trend detection
-- Ensemble forecasting for robustness
+### Modeling
+- Multiple baseline models: Linear, Ridge, Lasso, Random Forest, Gradient Boosting
+- Time-based train-test split (80-20)
+- StandardScaler untuk normalisasi fitur
+- Evaluasi dengan MAE, RMSE, MAPE, R²
 
-### Cannibalization Analysis
-- Difference-in-Differences (DiD) analysis
-- Cross-price elasticity calculation
-- Statistical significance testing (t-tests)
-- Source of Volume (SOV) breakdown
+### Statistical Testing
+- **Uji Asumsi Model**:
+  - Normalitas residual (Shapiro-Wilk / Jarque-Bera)
+  - Homoskedastisitas (Breusch-Pagan)
+  - Autokorelasi (Durbin-Watson, Ljung-Box)
+  - Multikolinearitas (VIF)
+- **Bias Detection**:
+  - Chi-square test untuk confounding
+  - Distribusi persentase untuk bias waktu/lokasi/promo
 
 ## 🛠️ Technologies Used
 
@@ -269,28 +288,26 @@ market_results = market_snapshot.execute()
 
 ## 🎯 Key Insights & Recommendations
 
-The analysis provides:
+Lihat file `reports/insights.md` untuk insight bisnis lengkap.
 
-1. **Product Strategy Recommendations**
-   - Invest in Star products
-   - Increase marketing for Question Mark products
-   - Harvest Cash Cow products
-   - Phase out Dog products
+### Temuan Utama
+- Dataset mencakup 1M+ transaksi dari 15 SKU
+- Periode analisis: 2020-2025
+- Total revenue dalam triliunan IDR
+- Promo menunjukkan lift signifikan pada penjualan
 
-2. **Marketing Optimization**
-   - Focus budget on high-innovation score products
-   - Leverage seasonal patterns
-   - Optimize channel mix
+### Dampak Bisnis
+- Channel e-commerce mendominasi penjualan
+- Promo efektif namun perlu optimasi timing
+- Elastisitas harga bervariasi antar SKU
+- Pola musiman terdeteksi untuk perencanaan inventory
 
-3. **Portfolio Management**
-   - Monitor cannibalization effects
-   - Differentiate products with high cross-elasticity
-   - Implement dynamic pricing strategies
-
-4. **Forecasting & Planning**
-   - Use ensemble forecasting for demand planning
-   - Account for seasonality in inventory management
-   - Prepare for identified trend directions
+### Rekomendasi Aksi
+1. Fokus investasi marketing pada channel e-commerce dengan ROI tertinggi
+2. Optimasi strategi promo berdasarkan analisis musiman
+3. Implementasi dynamic pricing untuk SKU dengan elastisitas tinggi
+4. Pengembangan model forecasting untuk perencanaan inventory
+5. Monitoring dan mitigasi bias data untuk analisis yang lebih representatif
 
 ## 📚 Documentation
 
